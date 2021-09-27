@@ -6,10 +6,6 @@ where
 
 import Test.QuickCheck
 
--- TODO quickcheck mult, *
--- TODO smaller/larger root using min, max and 
---      without using lists
-
 -- ----------------------------------------------
 -- Exercise 1
 -- ----------------------------------------------
@@ -70,15 +66,24 @@ nRoots a b c
 -- ----------------------------------------------
 
 smallerRoot :: Float -> Float -> Float -> Float 
-largerRoot :: Float -> Float -> Float -> Float
-getRoots :: Float -> Float -> Float -> [Float]
+--largerRoot :: Float -> Float -> Float -> Float
+getRoots :: Float -> Float -> Float -> (Float, Float)
 
-smallerRoot a b c = minimum (getRoots a b c)
-largerRoot a b c = maximum (getRoots a b c)
+smallerRoot a b c = min r1 r2
+    where (r1,r2) = (getRoots a b c)
+    
+largerRoot a b c = max r1 r2
+    where (r1,r2) = (getRoots a b c)
+
+--smallerRoot 1 0 (-2)
+--largerRoot 1 0 (-2)
+
+--smallerRoot (-1) 0 2
+--largerRoot (-1) 0 2
 
 getRoots a b c
     | (nRoots a b c == 0) = error "the quadratic equation has no real roots!"
-    | otherwise = [(-b) - sqrt(det) / 2*a, (-b) + sqrt(det) / 2*a]
+    | otherwise = ((-b) - sqrt(det) / 2*a, (-b) + sqrt(det) / 2*a)
     where
         det = b^2 - 4 * a * c
 
@@ -91,6 +96,11 @@ power2 n
     | n == 0 = 1
     | n > 0 = 2 * power2 (n-1)
     | otherwise = error "the power must be a natural number!"
+
+prop_power2 :: Integer -> Bool
+prop_power2 n
+    | n >= 0 = power2 n == 2^n
+    | otherwise = True
 
 -- ----------------------------------------------
 -- Exercise 7
@@ -105,6 +115,10 @@ mult m n
     | m > 1 = mult (m - 1) n + n
     | otherwise = (-1) * mult (-m) n
 
+prop_mult :: Integer -> Integer -> Bool
+prop_mult m n =
+    mult m n == m * n
+
 -- ----------------------------------------------
 -- Exercise 8
 -- ----------------------------------------------
@@ -116,9 +130,18 @@ prod m n
     | otherwise = mult (prod m (n-1)) n -- from left to right
 --  | otherwise = mult m (prod (m+1) n) -- from right to left 
 
+prop_prod :: Integer -> Integer -> Bool
+prop_prod m n
+    | m <= n && (n - m) <= 5 = prod m n == foldl (*) 1 [m .. n]
+    | otherwise = True
+
 fact :: Integer -> Integer
 fact n
     | n == 0 = 1
     | n > 0 = prod 1 n
     | otherwise = error "only defined for natural numbers!"
 
+prop_fact :: Integer -> Bool
+prop_fact n
+    | n >= 0 && n <= 11 = fact n == foldl (*) 1 [1 .. n]
+    | otherwise = True
