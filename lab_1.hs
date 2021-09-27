@@ -6,6 +6,10 @@ where
 
 import Test.QuickCheck
 
+-- TODO quickcheck mult, *
+-- TODO smaller/larger root using min, max and 
+--      without using lists
+
 -- ----------------------------------------------
 -- Exercise 1
 -- ----------------------------------------------
@@ -17,8 +21,8 @@ nAnd_1 :: Bool -> Bool -> Bool
 nAnd_1 x y = not (x && y)
 
 nAnd_2 :: Bool -> Bool -> Bool
-nAnd_2 True True = False
-nAnd_2 _ _       = True
+nAnd_2 _ False = True
+nAnd_2 x True = not x
 
 nAnd_3 :: Bool -> Bool -> Bool
 nAnd_3 False False = True
@@ -36,9 +40,8 @@ prop_nAnds_1 x y =
 
 prop_nAnds_2 :: Bool -> Bool -> Bool
 prop_nAnds_2 x y
-    | (x == False) && (y == True) || (x == True) && (y == False) =
-        (nAnd_1 x y == True) && (nAnd_2 x y == True) && (nAnd_3 x y == True)
-    | otherwise = prop_nAnds_1 x y
+    | (x == False) || (y == False) = nAnd_1 x y
+    | otherwise = True
     
 -- ----------------------------------------------
 -- Exercise 3
@@ -70,8 +73,8 @@ smallerRoot :: Float -> Float -> Float -> Float
 largerRoot :: Float -> Float -> Float -> Float
 getRoots :: Float -> Float -> Float -> [Float]
 
-smallerRoot a b c = (getRoots a b c) !! 0
-largerRoot a b c = (getRoots a b c) !! 1
+smallerRoot a b c = minimum (getRoots a b c)
+largerRoot a b c = maximum (getRoots a b c)
 
 getRoots a b c
     | (nRoots a b c == 0) = error "the quadratic equation has no real roots!"
@@ -97,9 +100,10 @@ mult :: Integer -> Integer -> Integer
 mult 0 _ = 0
 mult _ 0 = 0
 mult 1 n = n
+mult n 1 = n
 mult m n
     | m > 1 = mult (m - 1) n + n
-    | otherwise = (-1) * (mult ((-m) - 1) n + n)
+    | otherwise = (-1) * mult (-m) n
 
 -- ----------------------------------------------
 -- Exercise 8
@@ -109,8 +113,8 @@ prod :: Integer -> Integer -> Integer
 prod m n
     | m > n = error "invalid range!"
     | m == n = m
-    | (n - (m + 1)) == 0 = mult m n
-    | otherwise = mult m (prod (m+1) n)
+    | otherwise = mult (prod m (n-1)) n -- from left to right
+--  | otherwise = mult m (prod (m+1) n) -- from right to left 
 
 fact :: Integer -> Integer
 fact n
