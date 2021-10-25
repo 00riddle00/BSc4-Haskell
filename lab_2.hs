@@ -6,54 +6,39 @@ where
 
 import Data.Char
 import Data.List
-import Test.QuickCheck
 
 -- ----------------------------------------------
 -- Exercise 1
 -- ----------------------------------------------
 
 average :: [Float] -> Float
-average [x] = x
-average xs = avg' xs 0 0
-    where
-        avg' [] s n = s / n
-        avg' (x:xs) s n = avg' xs (s+x) (n+1)
-
---average :: [Float] -> Float
---average xs = sum xs / fromIntegral(length xs)
+average xs = sum xs / fromIntegral(length xs)
 
 -- ----------------------------------------------
 -- Exercise 2
 -- ----------------------------------------------
 
--- TODO simplify division
---
 divides1 :: Integer -> [Integer]
 divides1 0 = error "All integers divide 0"
-divides1 (-1) = divides1 1
-divides1 1 = [1,-1]
+divides1 1 = [1]
 divides1 x
     | x < 0 = divides1 (-x)
-    | otherwise = 1:(-1):(div' 2 x [])
+    | otherwise = 1:(div' 2 x [])
     where
         div' i x xs
-            | fromIntegral(i) > fromIntegral(x)/2 = (x:(-x):xs)
-            -- | i > div x 2 = (x:(-x):xs)
-            | mod x i == 0 = i:(-i):(div' (i+1) x xs)
+            | i > x `div` 2 = (x:xs)
+            | x `mod` i == 0 = i:(div' (i+1) x xs)
             | otherwise = div' (i+1) x (xs)
 
 divides2 :: Integer -> [Integer]
 divides2 0 = error "All integers divide 0"
-divides2 (-1) = divides2 1
-divides2 1 = [1,-1]
+divides2 1 = [1]
 divides2 x
     | x < 0 = divides2 (-x)
-    | otherwise = [1,-1] ++ concat [ [i,(-i)] | i <- [2..floor(fromIntegral(x)/2)], mod x i == 0] ++ [x, (-x)]
+    | otherwise = [1] ++ [ i | i <- [2..x `div` 2], mod x i == 0] ++ [x]
 
 isPrime :: Integer -> Bool
-isPrime x
-    | x <= 1 = False
-    | divides1(x) == [1,(-1),x,(-x)] = True
+isPrime x = x > 1 && divides1(x) == [1,x]
 
 -- ----------------------------------------------
 -- Exercise 3
@@ -86,8 +71,6 @@ permut xs ys
 -- Exercise 5
 -- ----------------------------------------------
 
--- TODO isAlpha?
---
 capitalise :: String -> String
 capitalise str = [toUpper ch | ch <- str, elem ch ['a'..'z'] || elem ch ['A'..'Z']]
 
@@ -110,7 +93,6 @@ itemTotal ((k,v):xs) = tmp [k] [v] xs
                 case (elemIndex k keys) of
                     Just i -> tmp keys (addToList values i v) xs
                     Nothing -> tmp (keys++[k]) (values++[v]) xs
-
 
 itemDiscount :: String -> Integer -> [(String,Float)] -> [(String,Float)]
 itemDiscount _ _ [] = []
