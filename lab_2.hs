@@ -5,6 +5,7 @@ module Lab_2
 where
 
 import Data.Char
+import Data.List
 import Test.QuickCheck
 
 -- ----------------------------------------------
@@ -25,6 +26,8 @@ average xs = avg' xs 0 0
 -- Exercise 2
 -- ----------------------------------------------
 
+-- TODO simplify division
+--
 divides1 :: Integer -> [Integer]
 divides1 0 = error "All integers divide 0"
 divides1 (-1) = divides1 1
@@ -35,6 +38,7 @@ divides1 x
     where
         div' i x xs
             | fromIntegral(i) > fromIntegral(x)/2 = (x:(-x):xs)
+            -- | i > div x 2 = (x:(-x):xs)
             | mod x i == 0 = i:(-i):(div' (i+1) x xs)
             | otherwise = div' (i+1) x (xs)
 
@@ -47,11 +51,9 @@ divides2 x
     | otherwise = [1,-1] ++ concat [ [i,(-i)] | i <- [2..floor(fromIntegral(x)/2)], mod x i == 0] ++ [x, (-x)]
 
 isPrime :: Integer -> Bool
-isPrime 0 = False
 isPrime x
-    | x < 0 = error "negative integer!"
-    | length (divides1(x)) == 4 = True
-    | otherwise = False
+    | x <= 1 = False
+    | divides1(x) == [1,(-1),x,(-x)] = True
 
 -- ----------------------------------------------
 -- Exercise 3
@@ -60,10 +62,7 @@ isPrime x
 prefix :: String -> String -> Bool
 prefix "" _ = True
 prefix _ "" = False
-prefix p s
-    | length p > length s = False
-    | head p == head s = prefix (tail p) (tail s)
-    | otherwise = False
+prefix p s = head p == head s && prefix (tail p) (tail s)
 
 substring :: String -> String -> Bool
 substring sub s = prefix sub s || substring sub (tail s)
@@ -87,6 +86,8 @@ permut xs ys
 -- Exercise 5
 -- ----------------------------------------------
 
+-- TODO isAlpha?
+--
 capitalise :: String -> String
 capitalise str = [toUpper ch | ch <- str, elem ch ['a'..'z'] || elem ch ['A'..'Z']]
 
@@ -99,12 +100,35 @@ itemTotal [] = []
 itemTotal [x] = [x]
 itemTotal ((k,v):xs) = tmp [k] [v] xs
     where
-        tmp :: [String] -> [Float] -> [(String,Float)]
-        tmp keys values [] = zip keys values
-        tmp keys values ((k,v):xs)
-            | elem k keys = tmp keys values(add $ to one existing value by index) xs   --in progress
-            | otherwise = tmp keys++[k] values++[v] xs                                 --in progress
+        tmp :: [String] -> [Float] -> [(String,Float)] -> [(String,Float)]
+        tmp keys values [] = (zip keys values)
+        tmp keys values ((k,v):xs) =
+            let 
+                addToList xs i value = 
+                    (take i xs) ++ [((xs!!i) + value)] ++ (drop (i+1) xs)
+            in
+                case (elemIndex k keys) of
+                    Just i -> tmp keys (addToList values i v) xs
+                    Nothing -> tmp (keys++[k]) (values++[v]) xs
 
 
+itemDiscount :: String -> Integer -> [(String,Float)] -> [(String,Float)]
+itemDiscount _ _ [] = []
+itemDiscount i d xs = [ if i == x then (x, y-y*fromIntegral(d)/100 ) else (x,y) | (x,y) <- xs]
 
---itemDiscount :: String -> Integer -> [(String,Float)] -> [(String,Float)]
+-- ----------------------------------------------
+-- Notes
+-- ----------------------------------------------
+
+--itemTotal [("Sultys", 30)]
+--itemTotal [("Bulves", 21), ("Morkos", 18)]
+--itemTotal [("Bulves", 21), ("Morkos", 18), ("Bulves", 19)]
+--itemTotal [("Bulves", 21), ("Morkos", 18), ("Kopustai", 24), ("Morkos", 12), ("Bulves", 19)]
+
+--itemDiscount "Sultys" 15 [("Sultys", 30)]
+--itemDiscount "Makaronai" 20 [("Sultys", 30)]
+--itemDiscount "Morkos" 10 [("Bulves", 21), ("Morkos", 18)]
+--itemDiscount "Koldunai" 20 [("Bulves", 21), ("Morkos", 18), ("Koldunai", 20)]
+
+--increaseListElem :: [Float] -> Int -> Float -> [Float]
+--increaseListElem xs i value = (take i xs) ++ [((xs!!i) + value)] ++ (drop (i+1) xs)
