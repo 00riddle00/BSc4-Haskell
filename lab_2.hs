@@ -60,12 +60,13 @@ permut :: [Integer] -> [Integer] -> Bool
 permut [] [] = True
 permut _ [] = False
 permut [] _ = False
-permut xs ys
-    | length xs /= length ys = False
-    | otherwise = qsort(xs) == qsort(ys)
-        where
-            qsort [] = []
-            qsort (x:xs) = qsort [y | y <- xs, y <= x] ++ [x] ++ qsort [y | y <- xs, y > x]
+permut (x:xs) ys =
+    let 
+        removeFromList zs i = (take i zs) ++ (drop (i+1) zs)
+    in
+        case (elemIndex x ys) of
+            Just i -> permut xs (removeFromList ys i)
+            Nothing -> False
 
 -- ----------------------------------------------
 -- Exercise 5
@@ -81,36 +82,19 @@ capitalise str = [toUpper ch | ch <- str, elem ch ['a'..'z'] || elem ch ['A'..'Z
 itemTotal :: [(String,Float)] -> [(String,Float)]
 itemTotal [] = []
 itemTotal [x] = [x]
-itemTotal ((k,v):xs) = tmp [k] [v] xs
+itemTotal ((k,v):xs) = items' [k] [v] xs
     where
-        tmp :: [String] -> [Float] -> [(String,Float)] -> [(String,Float)]
-        tmp keys values [] = (zip keys values)
-        tmp keys values ((k,v):xs) =
+        items' :: [String] -> [Float] -> [(String,Float)] -> [(String,Float)]
+        items' keys values [] = (zip keys values)
+        items' keys values ((k,v):xs) =
             let 
                 addToList xs i value = 
                     (take i xs) ++ [((xs!!i) + value)] ++ (drop (i+1) xs)
             in
                 case (elemIndex k keys) of
-                    Just i -> tmp keys (addToList values i v) xs
-                    Nothing -> tmp (keys++[k]) (values++[v]) xs
+                    Just i -> items' keys (addToList values i v) xs
+                    Nothing -> items' (keys++[k]) (values++[v]) xs
 
 itemDiscount :: String -> Integer -> [(String,Float)] -> [(String,Float)]
 itemDiscount _ _ [] = []
 itemDiscount i d xs = [ if i == x then (x, y-y*fromIntegral(d)/100 ) else (x,y) | (x,y) <- xs]
-
--- ----------------------------------------------
--- Notes
--- ----------------------------------------------
-
---itemTotal [("Sultys", 30)]
---itemTotal [("Bulves", 21), ("Morkos", 18)]
---itemTotal [("Bulves", 21), ("Morkos", 18), ("Bulves", 19)]
---itemTotal [("Bulves", 21), ("Morkos", 18), ("Kopustai", 24), ("Morkos", 12), ("Bulves", 19)]
-
---itemDiscount "Sultys" 15 [("Sultys", 30)]
---itemDiscount "Makaronai" 20 [("Sultys", 30)]
---itemDiscount "Morkos" 10 [("Bulves", 21), ("Morkos", 18)]
---itemDiscount "Koldunai" 20 [("Bulves", 21), ("Morkos", 18), ("Koldunai", 20)]
-
---increaseListElem :: [Float] -> Int -> Float -> [Float]
---increaseListElem xs i value = (take i xs) ++ [((xs!!i) + value)] ++ (drop (i+1) xs)
