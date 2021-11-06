@@ -60,4 +60,9 @@ unzip1 xys = foldr (\(x,y) (xs,ys) -> (x:xs, y:ys)) ([],[]) xys
 -- Exercise 4
 -- ----------------------------------------------
 
+length1 :: ([a] -> Int)
+length1 = sum . map (\x -> 1)
+
+length2 :: ([a] -> Int)
+length2 = foldr (\xs n -> n+1) 0
 
