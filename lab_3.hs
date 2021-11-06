@@ -66,3 +66,16 @@ length1 = sum . map (\x -> 1)
 length2 :: ([a] -> Int)
 length2 = foldr (\xs n -> n+1) 0
 
+-- ----------------------------------------------
+-- Exercise 5
+-- ----------------------------------------------
+
+ff :: Integer -> [Integer] -> Integer
+ff maxNum = sum_until maxNum . map (*10) . filter (>=0)
+
+sum_until n xs = sum_not_exceed' n xs 0
+    where
+        sum_not_exceed' _ [] suma = suma
+        sum_not_exceed' n (x:xs) suma
+            | (x+suma)>n = suma
+            | otherwise = sum_not_exceed' n xs (x+suma)
