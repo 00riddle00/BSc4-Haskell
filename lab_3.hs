@@ -79,3 +79,11 @@ sum_until n xs = sum_not_exceed' n xs 0
         sum_not_exceed' n (x:xs) suma
             | (x+suma)>n = suma
             | otherwise = sum_not_exceed' n xs (x+suma)
+
+-- ----------------------------------------------
+-- Exercise 6
+-- ----------------------------------------------
+
+total :: (Integer -> Integer) -> Integer -> Integer
+total f n = foldr (\x y -> (f x) + y) 0 [0..n]
+
