@@ -30,3 +30,22 @@ overlaps (Rectangle h w (x,y)) (Circle r (xc,yc)) = ((xn-xc)**2 + (yn-yc)**2) < 
         yn = max y2 (min yc y1)
 overlaps (Circle r (xc,yc)) (Rectangle h w (x,y)) = 
     overlaps (Rectangle h w (x,y)) (Circle r (xc,yc)) 
+
+-- ----------------------------------------------
+-- Exercise 2
+-- ----------------------------------------------
+
+any1 :: (a->Bool) -> [a] -> Bool
+any1 f xs = not (null (filter f xs))
+
+any2 :: (a->Bool) -> [a] -> Bool
+any2 _ [] = False
+any2 f xs = foldr (||) False (map f xs)
+
+all1 :: (a->Bool) -> [a] -> Bool
+all1 f xs = length (filter f xs) == length xs
+
+all2 :: (a->Bool) -> [a] -> Bool
+all2 _ [] = True
+all2 f xs = foldr (&&) True (map f xs)
+
