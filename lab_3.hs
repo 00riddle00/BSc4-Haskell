@@ -87,3 +87,15 @@ sum_until n xs = sum_not_exceed' n xs 0
 total :: (Integer -> Integer) -> Integer -> Integer
 total f n = foldr (\x y -> (f x) + y) 0 [0..n]
 
+-- ----------------------------------------------
+-- Exercise 7
+-- ----------------------------------------------
+
+iter1 :: Integer -> (a -> a) -> a -> a
+iter1 n f
+    | n <= 0 = id
+    | otherwise = f . iter1 (n-1) f
+
+iter2 :: Integer -> (a -> a) -> a -> a
+iter2 n f = foldr (.) id (replicate (fromIntegral(n)) f)
+
