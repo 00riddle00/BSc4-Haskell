@@ -41,6 +41,7 @@ any1 f xs = not (null (filter f xs))
 any2 :: (a->Bool) -> [a] -> Bool
 any2 _ [] = False
 any2 f xs = foldr (||) False (map f xs)
+--any2 f xs = foldr (\x y -> (f x) || y) False xs 
 
 all1 :: (a->Bool) -> [a] -> Bool
 all1 f xs = length (filter f xs) == length xs
@@ -64,7 +65,7 @@ length1 :: ([a] -> Int)
 length1 = sum . map (\x -> 1)
 
 length2 :: ([a] -> Int)
-length2 = foldr (\xs n -> n+1) 0
+length2 = foldr (\_ n -> n+1) 0
 
 -- ----------------------------------------------
 -- Exercise 5
