@@ -10,7 +10,6 @@ where
 
 data GTree a = Leaf a | Gnode [GTree a]
     deriving (Eq, Show)
-    --deriving (Eq, Ord, Show, Read)
 
 depth :: GTree a -> Integer
 depth (Leaf _) = 1
