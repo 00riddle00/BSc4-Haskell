@@ -16,3 +16,19 @@ occurs "c" (Gnode [(Gnode [(Leaf "a"), (Leaf "b")]), Leaf("c")]) == True
 mapTree (>1) (Leaf 1) == Leaf False
 mapTree (+1) (Gnode [(Gnode [(Leaf 1), (Leaf 2)]), Leaf(3)]) == Gnode [Gnode [Leaf 2, Leaf 3], Leaf(4)] 
 
+-- ----------------------------------------------
+-- Exercise 5
+-- ----------------------------------------------
+
+composeResult err1 err2 4 
+--OK "Success: The nearest int is even and positive!"
+
+composeResult err1 err2 (-4)
+--Error "The nearest int is negative!"
+
+composeResult err1 err2 (-3)
+--Error "The nearest int is negative!"
+
+composeResult err1 err2 (3)
+--Error "The nearest int is odd!"
+
