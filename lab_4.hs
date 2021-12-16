@@ -6,7 +6,6 @@
 module Lab_4
 where
 
-
 -- ----------------------------------------------
 -- Exercise 1
 -- ----------------------------------------------
@@ -60,6 +59,45 @@ eval (v:vs) (EVar variable) =
         Just x -> x
 
 eval vs (Op fn es) = fn (map (eval vs) es)
+
+-- ----------------------------------------------
+-- Exercise 3
+-- ----------------------------------------------
+
+type RegExp = String -> Bool
+
+-- empty string
+epsilon :: RegExp
+epsilon = (=="")
+
+-- any single character
+char :: Char -> RegExp
+char ch = (==[ch])
+
+-- either {pattern1} or {pattern2}
+(|||) :: RegExp -> RegExp -> RegExp
+e1 ||| e2 = \x -> e1 x || e2 x
+
+-- concat: {pattern1}{pattern2}
+(<<*>>) :: RegExp -> RegExp -> RegExp
+e1 <<*>> e2 = \x ->
+    or [e1 y && e2 z | (y,z) <- splits x]
+    where
+        -- returns all the ways a string can be split into two
+        splits :: String -> [(String,String)]
+        splits str = map (\x -> ((take x str),(drop x str)) ) [0..length (str)]
+
+-- 0 or 1 occurrences of {pattern}
+option :: RegExp -> RegExp
+option p = epsilon ||| p
+
+-- 1 or more occurrences of {pattern}
+plus :: RegExp -> RegExp
+plus p = (p <<*>> star p)
+
+-- repeating {pattern} zero or more times
+star :: RegExp -> RegExp
+star p = epsilon ||| (plus p)
 
 -- ----------------------------------------------
 -- Exercise 4

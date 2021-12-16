@@ -92,7 +92,34 @@ eval [('x',1),('y',2)] (Op fsum [Lit 1, EVar 'y', (Op fsum [EVar 'x', EVar 'y', 
 -- Exercise 3
 -- ----------------------------------------------
 
--- (...)
+(epsilon) "" == True
+(epsilon) "x" == False
+
+(char 'x') "x" == True
+(char 'x') "xxx" == False
+
+(char 'x' ||| char 'y') "x" == True
+(char 'x' ||| char 'y') "y" == True
+(char 'x' ||| char 'y') "z" == False
+
+(char 'x' <<*>> (char 'y' ||| char 'z')) "xy" == True
+(char 'x' <<*>> (char 'y' ||| char 'z')) "xz" == True
+(char 'x' <<*>> (char 'y' ||| char 'z')) "yz" == False
+(char 'h' <<*>> char 'e' <<*>> char 'l' <<*>> char 'l' <<*>> char 'o') "hello" == True
+
+option (char 'x') "" == True
+option (char 'x') "x" == True
+option (char 'x') "xx" == False
+
+plus (char 'x') "x" == True
+plus (char 'x') "xx" == True
+plus (char 'x') "" == False
+
+star (char 'x') "" == True
+star (char 'x') "x" == True
+star (char 'x') "xx" == True
+star (char 'x') "xxxxxx" == True
+star (char 'x') "xxxyxx" == False
 
 -- ----------------------------------------------
 -- Exercise 4
