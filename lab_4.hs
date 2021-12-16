@@ -42,6 +42,7 @@ instance Show (Expr a) where
     show (Op fn xs) = "Op fn " ++ show xs
 
 type Valuation a = [(Var,a)]
+--TODO: type Valuation a = (Var -> a)
 
 eval' :: Valuation a -> Expr a -> Maybe a
 eval' [(var,val)] (EVar variable)
@@ -53,12 +54,14 @@ eval :: Valuation a -> Expr a -> a
 eval _ (Lit x) = x
 
 eval [] (EVar variable) = error ("variable " ++ show variable ++ " is not initialized!")
+--TODO: eval fn (EVar variable) = (fn variable)
 eval (v:vs) (EVar variable) =
     case (eval' [v] (EVar variable)) of
         Nothing -> eval vs (EVar variable)
         Just x -> x
 
 eval vs (Op fn es) = fn (map (eval vs) es)
+--TODO: eval _ (Op fn []) = error ("no expression given!")
 
 -- ----------------------------------------------
 -- Exercise 3
