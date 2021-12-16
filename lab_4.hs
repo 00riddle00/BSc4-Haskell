@@ -1,8 +1,11 @@
 -- @Tomas Giedraitis
 -- Exercise set 4
 
+{-# LANGUAGE GADTs #-}
+
 module Lab_4
 where
+
 
 -- ----------------------------------------------
 -- Exercise 1
@@ -57,6 +60,23 @@ eval (v:vs) (EVar variable) =
         Just x -> x
 
 eval vs (Op fn es) = fn (map (eval vs) es)
+
+-- ----------------------------------------------
+-- Exercise 4
+-- ----------------------------------------------
+
+data NumList a where
+    Nlist :: Real a => [a] -> NumList [a]
+
+instance Eq a => Eq (NumList a) where
+    Nlist xs == Nlist ys = (average xs) == (average ys)
+
+instance Ord a => Ord (NumList a) where
+    (Nlist xs) `compare` (Nlist ys) = (average xs) `compare` (average ys)
+
+average :: (Real a, Fractional b) => [a] -> b
+average [] = 0
+average xs = realToFrac (sum xs) / (fromIntegral (length xs))
 
 -- ----------------------------------------------
 -- Exercise 5
