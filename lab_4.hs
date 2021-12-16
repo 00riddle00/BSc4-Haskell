@@ -24,6 +24,41 @@ mapTree f (Leaf x) = Leaf (f x)
 mapTree f (Gnode ts) = Gnode (map (mapTree f) ts)
 
 -- ----------------------------------------------
+-- Exercise 2
+-- ----------------------------------------------
+
+fsum :: [Integer] -> Integer
+fsum xs = sum xs
+
+data Expr a = Lit a | EVar Var | Op (Ops a) [Expr a]
+type Ops a = [a] -> a
+type Var = Char
+
+instance Show (Expr a) where
+    show (Lit a) = "literal"
+    show (EVar a) = "var:" ++ show a
+    show (Op fn xs) = "Op fn " ++ show xs
+
+type Valuation a = [(Var,a)]
+
+eval' :: Valuation a -> Expr a -> Maybe a
+eval' [(var,val)] (EVar variable)
+      | var == variable = Just val
+      | otherwise = Nothing
+
+eval :: Valuation a -> Expr a -> a
+
+eval _ (Lit x) = x
+
+eval [] (EVar variable) = error ("variable " ++ show variable ++ " is not initialized!")
+eval (v:vs) (EVar variable) =
+    case (eval' [v] (EVar variable)) of
+        Nothing -> eval vs (EVar variable)
+        Just x -> x
+
+eval vs (Op fn es) = fn (map (eval vs) es)
+
+-- ----------------------------------------------
 -- Exercise 5
 -- ----------------------------------------------
 

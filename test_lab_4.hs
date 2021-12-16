@@ -17,6 +17,78 @@ mapTree (>1) (Leaf 1) == Leaf False
 mapTree (+1) (Gnode [(Gnode [(Leaf 1), (Leaf 2)]), Leaf(3)]) == Gnode [Gnode [Leaf 2, Leaf 3], Leaf(4)] 
 
 -- ----------------------------------------------
+-- Exercise 2
+-- ----------------------------------------------
+
+-- -------------------------
+-- show
+-- -------------------------
+
+Lit 1
+-- literal
+
+EVar 'x'
+-- var:'x'
+
+Op fsum []
+-- Op fn []
+
+Op fsum [Lit 1, EVar 'x']
+-- Op fn [literal,var:'x']
+
+-- -------------------------
+-- eval (Lit a)
+-- -------------------------
+
+eval [] (Lit 1) == 1
+
+eval [('x', 1)] (Lit 2) == 2
+
+-- -------------------------
+-- eval (EVar Var)
+-- -------------------------
+
+eval [] (EVar 'x')
+-- Exception: variable 'x' is not initialized
+
+eval [('x',1)] (EVar 'x') == 1
+
+eval [('x',1)] (EVar 'y')
+-- Exception: variable 'y' is not initialized
+
+eval [('x',1),('y',2),('z',3)] (EVar 'z') == 3
+
+eval [('x',1),('y',2),('z',3)] (EVar 'w')
+-- Exception: variable 'w' is not initialized
+
+-- -------------------------
+-- eval (Op (Ops a) [Expr a])
+-- -------------------------
+
+eval [] (Op fsum [])
+-- Exception: no expression given!
+
+eval [('x',1)] (Op fsum [])
+-- Exception: no expression given!
+
+eval [] (Op fsum [Lit 1]) == 1
+eval [('x',1)] (Op fsum [Lit 2]) == 2
+
+eval [] (Op fsum [Lit 1, Lit 2]) == 3
+eval [] (Op fsum [Lit 1, Lit 2, Lit 3]) == 6
+
+eval [('y',2)] (Op fsum [Lit 1, EVar 'y', Lit 3]) == 6
+
+eval [('x',1)] (Op fsum [Lit 1, EVar 'y', Lit 3])
+-- Exception: variable 'y' is not initialized
+
+eval [('y',2)] (Op fsum [Lit 1, EVar 'y'])
+
+eval [('y',2)] (Op fsum [Lit 1, EVar 'y', (Op fsum [Lit 1, Lit 2])]) == 6
+
+eval [('x',1),('y',2)] (Op fsum [Lit 1, EVar 'y', (Op fsum [EVar 'x', EVar 'y', Lit 2])]) == 8
+
+-- ----------------------------------------------
 -- Exercise 5
 -- ----------------------------------------------
 
