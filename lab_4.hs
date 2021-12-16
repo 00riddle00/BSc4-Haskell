@@ -162,3 +162,45 @@ err2 val
    | (val `mod` 2) > 0 = Error "The nearest int is odd!"
    | otherwise = OK "Success: The nearest int is even and positive!"
 
+-- ----------------------------------------------
+-- Exercise 6
+-- ----------------------------------------------
+
+-- (...)
+
+-- ----------------------------------------------
+-- Exercise 7
+-- ----------------------------------------------
+
+-- infinite data stream
+data Stream a = Cons a (Stream a)
+    deriving (Show)
+
+-- creates an infinite list out of the given stream
+streamtoList :: Stream a -> [a]
+streamtoList (Cons x xs) = x:(streamtoList xs)
+
+-- creates a stream for the given iteration function 
+-- and the starting stream element (seed)
+--
+streamIterate :: (a -> a) -> a -> Stream a
+streamIterate f x = Cons x (streamIterate f (f x))
+
+-- merges two streams into one so that their elements are
+-- interleaved. In other words, for two given streams 
+-- <e11, e12, e13, ...> and <e21, e22, e23, ...>, the 
+-- result would be the stream <e11, e21, e12, e22, ...>
+--
+streamInterleave :: Stream a -> Stream a -> Stream a
+streamInterleave (Cons x xs) (Cons y ys) = Cons x (Cons y (streamInterleave xs ys))
+
+-----------------------------
+
+-- finite data stream (for testing)
+data Stream' a = Empty | Cons' a (Stream' a)
+    deriving (Show, Eq)
+
+streamtoList' :: Stream' a -> [a]
+streamtoList' Empty = []
+streamtoList' (Cons' x xs) = x:(streamtoList' xs)
+

@@ -158,5 +158,15 @@ composeResult err1 err2 (3)
 -- Exercise 7
 -- ----------------------------------------------
 
--- (...)
+streamtoList' Empty == []
+streamtoList' (Cons' 1 Empty) == [1]
+streamtoList' (Cons' 1 (Cons' 2 Empty)) == [1,2]
+streamtoList' (Cons' 1 (Cons' 2 (Cons' 3 Empty))) == [1,2,3]
+
+streamIterate (\x -> x+1) (1)
+
+streamInterleave' Empty Empty == Empty
+streamInterleave' (Cons' 1 Empty) Empty == (Cons' 1 Empty)
+streamInterleave' Empty (Cons' 2 Empty) == (Cons' 2 Empty)
+streamInterleave' (Cons' 1 (Cons' 2 Empty)) (Cons' 3 (Cons' 4 Empty)) == (Cons' 1 (Cons' 3 (Cons' 2 (Cons' 4 Empty))))
 
