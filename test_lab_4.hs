@@ -119,12 +119,31 @@ star (char 'x') "xxxyxx" == False
 -- Exercise 4
 -- ----------------------------------------------
 
+-- -------------------------
+-- Ex.4 Solution No.1
+-- -------------------------
+
 (Nlist [] == Nlist []) == True
 (Nlist [1,2,3] == Nlist [1,2,3]) == True
 (Nlist [1,2,3] == Nlist [1,3]) == True
 (Nlist [1,2,3] == Nlist [2,4]) == False
 (Nlist [1,2,3] > Nlist []) == True
 (Nlist [1,2,3] > Nlist [0,1,4]) == True
+(Nlist [1.5,2.5,3.5] == Nlist [2.1,4.2,6.3]) == False
+(Nlist [1.5,2.5,3.5] == Nlist [1.0,2.1,4.4]) == True
+
+-- -------------------------
+-- Ex.4 Solution No.2
+-- -------------------------
+
+(Nlist' [] == Nlist' []) == True
+(Nlist' [1,2,3] == Nlist' [1,2,3]) == True
+(Nlist' [1,2,3] == Nlist' [1,3]) == True
+(Nlist' [1,2,3] == Nlist' [2,4]) == False
+(Nlist' [1,2,3] > Nlist' []) == True
+(Nlist' [1,2,3] > Nlist' [0,1,4]) == True
+(Nlist' [1.5,2.5,3.5] == Nlist' [2.1,4.2,6.3]) == False
+(Nlist' [1.5,2.5,3.5] == Nlist' [1.0,2.1,4.4]) == True
 
 -- ----------------------------------------------
 -- Exercise 5

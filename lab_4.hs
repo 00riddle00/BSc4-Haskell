@@ -105,18 +105,39 @@ star p = epsilon ||| (plus p)
 -- Exercise 4
 -- ----------------------------------------------
 
-data NumList a where
-    Nlist :: Real a => [a] -> NumList [a]
+-- -------------------------
+-- Ex.4 Solution No.1
+-- -------------------------
 
-instance Eq a => Eq (NumList a) where
+data NumList a = Nlist [a]
+
+instance (Fractional a, Eq a) => Eq (NumList a) where
     Nlist xs == Nlist ys = (average xs) == (average ys)
 
-instance Ord a => Ord (NumList a) where
+instance (Fractional a, Ord a) => Ord (NumList a) where
     (Nlist xs) `compare` (Nlist ys) = (average xs) `compare` (average ys)
 
-average :: (Real a, Fractional b) => [a] -> b
+average :: Fractional a => [a] -> a
 average [] = 0
-average xs = realToFrac (sum xs) / (fromIntegral (length xs))
+average xs = (sum xs) / (fromIntegral (length xs))
+
+-- -------------------------
+-- Ex.4 Solution No.2
+-- -------------------------
+
+-- Using GADTs
+data NumList' a where
+    Nlist' :: Real a => [a] -> NumList' [a]
+
+instance Eq a => Eq (NumList' a) where
+    Nlist' xs == Nlist' ys = (average' xs) == (average' ys)
+
+instance Ord a => Ord (NumList' a) where
+    (Nlist' xs) `compare` (Nlist' ys) = (average' xs) `compare` (average' ys)
+
+average' :: (Real a, Fractional b) => [a] -> b
+average' [] = 0
+average' xs = realToFrac (sum xs) / (fromIntegral (length xs))
 
 -- ----------------------------------------------
 -- Exercise 5
