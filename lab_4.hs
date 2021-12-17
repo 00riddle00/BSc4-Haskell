@@ -29,9 +29,6 @@ mapTree f (Gnode ts) = Gnode (map (mapTree f) ts)
 -- Exercise 2
 -- ----------------------------------------------
 
-fsum :: [Integer] -> Integer
-fsum xs = sum xs
-
 data Expr a = Lit a | EVar Var | Op (Ops a) [Expr a]
 type Ops a = [a] -> a
 type Var = Char
@@ -41,27 +38,29 @@ instance Show (Expr a) where
     show (EVar a) = "var:" ++ show a
     show (Op fn xs) = "Op fn " ++ show xs
 
-type Valuation a = [(Var,a)]
---TODO: type Valuation a = (Var -> a)
-
-eval' :: Valuation a -> Expr a -> Maybe a
-eval' [(var,val)] (EVar variable)
-      | var == variable = Just val
-      | otherwise = Nothing
+type Valuation a = (Var -> a)
 
 eval :: Valuation a -> Expr a -> a
-
 eval _ (Lit x) = x
+eval fval (EVar var) = fval var
 
-eval [] (EVar variable) = error ("variable " ++ show variable ++ " is not initialized!")
---TODO: eval fn (EVar variable) = (fn variable)
-eval (v:vs) (EVar variable) =
-    case (eval' [v] (EVar variable)) of
-        Nothing -> eval vs (EVar variable)
-        Just x -> x
+eval _ (Op fn []) = error ("no expression given!")
+eval fval (Op fn es) = fn (map (eval fval) es)
 
-eval vs (Op fn es) = fn (map (eval vs) es)
---TODO: eval _ (Op fn []) = error ("no expression given!")
+-- valuation functions
+fval0, fval1 :: Valuation Integer
+
+fval0 var = 0
+
+fval1 var = case var of 
+    'x' -> 1
+    'y' -> 2
+    'z' -> 3
+    _ -> error ("variable " ++ show var ++ " is not initialized!")
+
+-- function on operands
+fsum :: Ops Integer
+fsum xs = sum xs
 
 -- ----------------------------------------------
 -- Exercise 3
