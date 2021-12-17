@@ -174,6 +174,32 @@ average' xs = realToFrac (sum xs) / (fromIntegral (length xs))
 data Result a = OK a | Error String
     deriving (Show)
 
+-- functions returning Result
+--
+fres1 :: Float -> Result Integer
+fres1 val 
+    | val < 0 = Error "The nearest int is negative!"
+    | otherwise = OK (round(val))
+  
+fres2 :: Integer -> Result String
+fres2 val
+    | (val `mod` 2) > 0 = Error "The nearest int is odd!"
+    | otherwise = OK "Success: The nearest int is even and positive!"
+
+-- -------------------------
+-- Ex.5 Solution No.1
+-- -------------------------
+ 
+composeResult :: (a -> Result b) -> (b -> Result c) -> (a -> Result c)
+composeResult fn1 fn2 x = 
+    case (fn1 x) of 
+        Error str -> Error str
+        OK y -> fn2 y
+
+-- -------------------------
+-- Ex.5 Solution No.2
+-- -------------------------
+
 instance Semigroup a => Semigroup (Result a) where
     (Error errmsg) <> _ = (Error errmsg)
     _ <> (Error errmsg) = (Error errmsg)
@@ -194,21 +220,11 @@ instance Applicative Result where
 
 instance Monad Result where
     return x = OK x  
-    (Error errmsg) >>= f  = (Error errmsg)
+    (Error errmsg) >>= f = (Error errmsg)
     OK x >>= f = f x
 
-composeResult :: (a -> Result b) -> (b -> Result c) -> (a -> Result c)
-composeResult f g x = f x >>= g
-
-err1 :: Float -> Result Integer
-err1 val 
-   | val < 0 = Error "The nearest int is negative!"
-   | otherwise = OK (round(val))
-  
-err2 :: Integer -> Result String
-err2 val 
-   | (val `mod` 2) > 0 = Error "The nearest int is odd!"
-   | otherwise = OK "Success: The nearest int is even and positive!"
+composeResult' :: (a -> Result b) -> (b -> Result c) -> (a -> Result c)
+composeResult' f g x = f x >>= g
 
 -- ----------------------------------------------
 -- Exercise 6

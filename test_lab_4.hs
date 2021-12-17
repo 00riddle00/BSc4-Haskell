@@ -207,16 +207,36 @@ star (char 'x') "xxxyxx" == False
 -- Exercise 5
 -- ----------------------------------------------
 
-composeResult err1 err2 4 
+-- -------------------------------------
+-- Ex.5 Solution No.1
+-- -------------------------------------
+
+composeResult fres1 fres2 4 
 --OK "Success: The nearest int is even and positive!"
 
-composeResult err1 err2 (-4)
+composeResult fres1 fres2 (-4)
 --Error "The nearest int is negative!"
 
-composeResult err1 err2 (-3)
+composeResult fres1 fres2 (-3)
 --Error "The nearest int is negative!"
 
-composeResult err1 err2 (3)
+composeResult fres1 fres2 (3)
+--Error "The nearest int is odd!"
+
+-- -------------------------------------
+-- Ex.5 Solution No.2
+-- -------------------------------------
+
+composeResult' fres1 fres2 4 
+--OK "Success: The nearest int is even and positive!"
+
+composeResult' fres1 fres2 (-4)
+--Error "The nearest int is negative!"
+
+composeResult' fres1 fres2 (-3)
+--Error "The nearest int is negative!"
+
+composeResult' fres1 fres2 (3)
 --Error "The nearest int is odd!"
 
 -- ----------------------------------------------
