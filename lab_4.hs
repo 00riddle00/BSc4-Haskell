@@ -38,6 +38,14 @@ instance Show (Expr a) where
     show (EVar a) = "var:" ++ show a
     show (Op fn xs) = "Op fn " ++ show xs
 
+-- function on operands
+fsum :: Ops Integer
+fsum xs = sum xs
+
+-- -------------------------
+-- Ex.2 Solution No.1
+-- -------------------------
+
 type Valuation a = (Var -> a)
 
 eval :: Valuation a -> Expr a -> a
@@ -58,9 +66,29 @@ fval1 var = case var of
     'z' -> 3
     _ -> error ("variable " ++ show var ++ " is not initialized!")
 
--- function on operands
-fsum :: Ops Integer
-fsum xs = sum xs
+-- -------------------------
+-- Ex.2 Solution No.2
+-- -------------------------
+
+type Valuation' a = [(Var,a)]
+
+eval'' :: Valuation' a -> Expr a -> Maybe a
+eval'' [(var,val)] (EVar variable)
+      | var == variable = Just val
+      | otherwise = Nothing
+
+eval' :: Valuation' a -> Expr a -> a
+
+eval' _ (Lit x) = x
+
+eval' [] (EVar variable) = error ("variable " ++ show variable ++ " is not initialized!")
+eval' (v:vs) (EVar variable) =
+    case (eval'' [v] (EVar variable)) of
+        Nothing -> eval' vs (EVar variable)
+        Just x -> x
+
+eval' _ (Op fn []) = error ("no expression given!")
+eval' vs (Op fn es) = fn (map (eval' vs) es)
 
 -- ----------------------------------------------
 -- Exercise 3

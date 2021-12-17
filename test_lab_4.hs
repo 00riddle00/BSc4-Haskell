@@ -36,17 +36,21 @@ Op fsum []
 Op fsum [Lit 1, EVar 'x']
 -- Op fn [literal,var:'x']
 
--- -------------------------
+-- -------------------------------------
+-- Ex.2 Solution No.1
+-- -------------------------------------
+
+-- --------------------------
 -- eval (Lit a)
--- -------------------------
+-- --------------------------
 
 eval fval0 (Lit 1) == 1
 
 eval (\x -> 1) (Lit 1) == 1
 
--- -------------------------
+-- --------------------------
 -- eval (EVar Var)
--- -------------------------
+-- --------------------------
 
 eval (\x -> 1) (EVar 'x') == 1
 
@@ -57,9 +61,9 @@ eval fval1 (EVar 'z') == 3
 eval fval1 (EVar 'w')
  --Exception: variable 'w' is not initialized
 
--- -------------------------
+-- --------------------------
 -- eval (Op (Ops a) [Expr a])
--- -------------------------
+-- --------------------------
 
 eval (\x -> 1) (Op fsum [])
 -- Exception: no expression given!
@@ -81,6 +85,60 @@ eval fval1 (Op fsum [Lit 1, EVar 'w', Lit 3])
 eval (\_ -> 2) (Op fsum [Lit 1, EVar 'y', (Op fsum [Lit 1, Lit 2])]) == 6
 
 eval fval1 (Op fsum [Lit 1, EVar 'y', (Op fsum [EVar 'x', EVar 'y', Lit 2])]) == 8
+
+-- -------------------------------------
+-- Ex.2 Solution No.2
+-- -------------------------------------
+
+-- -------------------------
+-- eval' (Lit a)
+-- -------------------------
+
+eval' [] (Lit 1) == 1
+
+eval' [('x', 1)] (Lit 2) == 2
+
+-- -------------------------
+-- eval' (EVar Var)
+-- -------------------------
+
+eval' [] (EVar 'x')
+-- Exception: variable 'x' is not initialized
+
+eval' [('x',1)] (EVar 'x') == 1
+
+eval' [('x',1)] (EVar 'y')
+-- Exception: variable 'y' is not initialized
+
+eval' [('x',1),('y',2),('z',3)] (EVar 'z') == 3
+
+eval' [('x',1),('y',2),('z',3)] (EVar 'w')
+-- Exception: variable 'w' is not initialized
+
+-- -------------------------
+-- eval' (Op (Ops a) [Expr a])
+-- -------------------------
+
+eval' [] (Op fsum [])
+-- Exception: no expression given!
+
+eval' [('x',1)] (Op fsum [])
+-- Exception: no expression given!
+
+eval' [] (Op fsum [Lit 1]) == 1
+eval' [('x',1)] (Op fsum [Lit 2]) == 2
+
+eval' [] (Op fsum [Lit 1, Lit 2]) == 3
+eval' [] (Op fsum [Lit 1, Lit 2, Lit 3]) == 6
+
+eval' [('y',2)] (Op fsum [Lit 1, EVar 'y', Lit 3]) == 6
+
+eval' [('x',1)] (Op fsum [Lit 1, EVar 'y', Lit 3])
+-- Exception: variable 'y' is not initialized
+
+eval' [('y',2)] (Op fsum [Lit 1, EVar 'y', (Op fsum [Lit 1, Lit 2])]) == 6
+
+eval' [('x',1),('y',2)] (Op fsum [Lit 1, EVar 'y', (Op fsum [EVar 'x', EVar 'y', Lit 2])]) == 8
 
 -- ----------------------------------------------
 -- Exercise 3
@@ -119,9 +177,9 @@ star (char 'x') "xxxyxx" == False
 -- Exercise 4
 -- ----------------------------------------------
 
--- -------------------------
+-- -------------------------------------
 -- Ex.4 Solution No.1
--- -------------------------
+-- -------------------------------------
 
 (Nlist [] == Nlist []) == True
 (Nlist [1,2,3] == Nlist [1,2,3]) == True
@@ -132,9 +190,9 @@ star (char 'x') "xxxyxx" == False
 (Nlist [1.5,2.5,3.5] == Nlist [2.1,4.2,6.3]) == False
 (Nlist [1.5,2.5,3.5] == Nlist [1.0,2.1,4.4]) == True
 
--- -------------------------
+-- -------------------------------------
 -- Ex.4 Solution No.2
--- -------------------------
+-- -------------------------------------
 
 (Nlist' [] == Nlist' []) == True
 (Nlist' [1,2,3] == Nlist' [1,2,3]) == True
