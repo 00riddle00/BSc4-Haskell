@@ -166,7 +166,10 @@ err2 val
 -- Exercise 6
 -- ----------------------------------------------
 
--- (...)
+goldbach :: Integer -> Bool
+goldbach n = (n==4) || not (null [(x,y) | x <- takeWhile (\x -> x+3 <= n) (sieve [2..]), y <- takeWhile (\y -> x+y <= n) (sieve [x..]), x+y == n]) && goldbach (n-2)
+    where
+        sieve (x:xs) = x : sieve [y | y <- xs, y `mod` x > 0]
 
 -- ----------------------------------------------
 -- Exercise 7
