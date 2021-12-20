@@ -259,7 +259,7 @@ streamIterate f x = Cons x (streamIterate f (f x))
 -- result would be the stream <e11, e21, e12, e22, ...>
 --
 streamInterleave :: Stream a -> Stream a -> Stream a
-streamInterleave (Cons x xs) (Cons y ys) = Cons x (Cons y (streamInterleave xs ys))
+streamInterleave (Cons x xs) ys = Cons x (streamInterleave (ys xs))
 
 -----------------------------
 
