@@ -247,6 +247,14 @@ data Stream a = Cons a (Stream a)
 streamtoList :: Stream a -> [a]
 streamtoList (Cons x xs) = x:(streamtoList xs)
 
+------------------------------------
+-- finite version of streamtoList (used for testing)
+streamTake :: Integer -> Stream a  -> [a]
+streamTake n (Cons x xs)
+   | n > 0     =  x : (streamTake (n - 1) xs)
+   | otherwise = []
+------------------------------------
+
 -- creates a stream for the given iteration function 
 -- and the starting stream element (seed)
 --
@@ -259,15 +267,5 @@ streamIterate f x = Cons x (streamIterate f (f x))
 -- result would be the stream <e11, e21, e12, e22, ...>
 --
 streamInterleave :: Stream a -> Stream a -> Stream a
-streamInterleave (Cons x xs) ys = Cons x (streamInterleave (ys xs))
-
------------------------------
-
--- finite data stream (for testing)
-data Stream' a = Empty | Cons' a (Stream' a)
-    deriving (Show, Eq)
-
-streamtoList' :: Stream' a -> [a]
-streamtoList' Empty = []
-streamtoList' (Cons' x xs) = x:(streamtoList' xs)
+streamInterleave (Cons x xs) ys = Cons x (streamInterleave ys xs)
 

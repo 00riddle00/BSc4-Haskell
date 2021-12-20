@@ -249,15 +249,7 @@ goldbach 1000 == True
 -- Exercise 7
 -- ----------------------------------------------
 
-streamtoList' Empty == []
-streamtoList' (Cons' 1 Empty) == [1]
-streamtoList' (Cons' 1 (Cons' 2 Empty)) == [1,2]
-streamtoList' (Cons' 1 (Cons' 2 (Cons' 3 Empty))) == [1,2,3]
+negStream = streamIterate (\x -> x - 1) (-1)
+posStream = streamIterate (\x -> x + 1) (1)
 
-streamIterate (\x -> x+1) (1)
-
-streamInterleave' Empty Empty == Empty
-streamInterleave' (Cons' 1 Empty) Empty == (Cons' 1 Empty)
-streamInterleave' Empty (Cons' 2 Empty) == (Cons' 2 Empty)
-streamInterleave' (Cons' 1 (Cons' 2 Empty)) (Cons' 3 (Cons' 4 Empty)) == (Cons' 1 (Cons' 3 (Cons' 2 (Cons' 4 Empty))))
-
+streamTake 10 (streamInterleave posStream negStream) == [1,-1,2,-2,3,-3,4,-4,5,-5]
